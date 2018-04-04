@@ -15,6 +15,9 @@ class CreateVisitsTable extends Migration
     {
         Schema::create('visits', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('beacon_id');
+            $table->unsignedInteger('user_id');
+            $table->double('distance');
             $table->timestamps();
         });
     }

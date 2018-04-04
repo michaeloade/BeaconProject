@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+
 class BeepController extends SecureController
 {
     /**
@@ -14,5 +16,8 @@ class BeepController extends SecureController
         //
     }
 
-    //
+    public function store(Request $request)
+    {
+
+    }
 }
