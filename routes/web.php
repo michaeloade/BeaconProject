@@ -13,7 +13,7 @@
 
 $router->get('/', function () use ($router) {
     return [
-      "app" => "MayMall Beacon"
+      "app" => "MayMall Beacon Application"
     ];
 });
 
