@@ -17,6 +17,6 @@ class Visit extends Model
 
     public function beacon()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Beacon::class);
     }
 }

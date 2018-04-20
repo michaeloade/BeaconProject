@@ -17,7 +17,7 @@ class CreateBeaconsTable extends Migration
             $table->increments('id');
             $table->string('beacon_id');
             $table->string('description');
-            $table->dateTime('last_seen');
+            $table->dateTime('last_seen')->nullable();
             $table->timestamps();
         });
     }

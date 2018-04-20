@@ -12,5 +12,9 @@
 */
 
 $router->get('/', function () use ($router) {
-    return $router->app->version();
+    return [
+      "app" => "MayMall Beacon"
+    ];
 });
+
+$router->post('/beep', ['uses' => 'BeepController@store']);

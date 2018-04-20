@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Beacon;
-use App\Product;
+use App\Events\UserVisitEvent;
+use App\User;
 use App\Visit;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class BeepController extends SecureController
@@ -23,9 +25,23 @@ class BeepController extends SecureController
 
     public function store(Request $request)
     {
-        $beacon = Beacon::firstOrFail($request->beacon);
+        $this->validate($request, [
+            'beacon' => 'required',
+            'distance' => 'required'
+        ]);
 
-        $this->visit->beacon()->associate($beacon);
-
+        /** @var Beacon $beacon */
+        $beacon = Beacon::where('beacon_id', $request->beacon)->firstOrFail();
+        $beacon->last_seen = $beacon->freshTimestamp();
+        $beacon->save();
+        $user = User::first();
+        if(Carbon::now()->subMinutes(config('beacon.timeout', 0))->greaterThan($beacon->visits()->latest()->first()->created_at)) {
+            $this->visit->distance = $request->distance;
+            $this->visit->beacon()->associate($beacon);
+            $this->visit->user()->associate($user);
+            $this->visit->save();
+            event(new UserVisitEvent($this->visit));
+        }
+        return $this->visit;
     }
 }
