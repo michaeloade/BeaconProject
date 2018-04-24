@@ -5,5 +5,5 @@
  */
 
 return [
-    'timeout' => env('BEACON_TIMEOUT', 10)
+    'timeout' => intval(env('BEACON_TIMEOUT', 10))
 ];

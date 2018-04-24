@@ -15,7 +15,7 @@ class CreateBeaconsTable extends Migration
     {
         Schema::create('beacons', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('beacon_id');
+            $table->string('beacon_id')->unique();
             $table->string('description');
             $table->dateTime('last_seen')->nullable();
             $table->timestamps();

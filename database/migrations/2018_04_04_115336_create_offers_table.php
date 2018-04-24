@@ -19,6 +19,8 @@ class CreateOffersTable extends Migration
             $table->double('discount')->default(0);
             $table->boolean('active')->default(false);
             $table->timestamps();
+
+            $table->foreign('product_id')->references('id')->on('products');
         });
     }
 
@@ -29,6 +31,9 @@ class CreateOffersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('offers');
+        Schema::table('offers', function(Blueprint $table) {
+            $table->dropForeign('offers_product_id_foreign');
+            $table->drop();
+        });
     }
 }

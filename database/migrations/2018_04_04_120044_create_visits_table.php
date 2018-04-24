@@ -19,6 +19,9 @@ class CreateVisitsTable extends Migration
             $table->unsignedInteger('user_id');
             $table->double('distance');
             $table->timestamps();
+
+            $table->foreign('beacon_id')->references('id')->on('beacons');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 
@@ -29,6 +32,11 @@ class CreateVisitsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('visits');
+        Schema::table('visits', function (Blueprint $table) {
+            $table->dropForeign('visits_beacon_id_foreign');
+            $table->dropForeign('visits_user_id_foreign');
+
+            $table->drop();
+        });
     }
 }
