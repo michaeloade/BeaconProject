@@ -18,3 +18,5 @@ $router->get('/', function () use ($router) {
 });
 
 $router->post('/beep', ['uses' => 'BeepController@store']);
+$router->post('/auth/login', ['uses' => 'AuthController@login']);
+$router->post('/auth/register', ['uses' => 'AuthController@register']);

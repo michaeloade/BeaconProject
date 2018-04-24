@@ -46,10 +46,10 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
-        return new Response([
-            "error" => $e->getMessage(),
-            "trace" => $e->getTrace()
-        ]);
-        //return parent::render($request, $e);
+//        return new Response([
+//            "error" => $e->getMessage(),
+//            "trace" => $e->getTrace()
+//        ]);
+        return parent::render($request, $e);
     }
 }

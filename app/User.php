@@ -3,7 +3,10 @@
 namespace App;
 
 use Illuminate\Auth\Authenticatable;
+use Illuminate\Auth\Events\Authenticated;
+use Illuminate\Auth\Events\Failed;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Lumen\Auth\Authorizable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -34,5 +37,18 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function visits()
     {
         return $this->hasMany(Visit::class);
+    }
+
+    public function authAttempt($password)
+    {
+        if (Hash::check($password, $this->password)) {
+            event(new Authenticated($this));
+
+            return true;
+        } else {
+            event(new Failed($this, $this->email, $password));
+
+            return false;
+        }
     }
 }
