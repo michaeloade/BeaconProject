@@ -42,6 +42,8 @@ class BeepController extends SecureController
         } else {
             if(Carbon::now()->subMinutes(config('beacon.timeout', 1))->greaterThan($beacon->visits()->latest()->first()->created_at)) {
                 $this->recordVisit($request, $user, $beacon);
+            } else {
+                return $beacon->visits()->latest()->first();
             }
         }
         return $this->visit;
