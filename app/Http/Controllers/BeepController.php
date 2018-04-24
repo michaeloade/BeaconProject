@@ -27,21 +27,32 @@ class BeepController extends SecureController
     {
         $this->validate($request, [
             'beacon' => 'required',
-            'distance' => 'required'
+            'distance' => 'required',
+            'user' => 'required|exists:users,email'
         ]);
 
         /** @var Beacon $beacon */
         $beacon = Beacon::where('beacon_id', $request->beacon)->firstOrFail();
         $beacon->last_seen = $beacon->freshTimestamp();
         $beacon->save();
-        $user = User::first();
-        if(Carbon::now()->subMinutes(config('beacon.timeout', 1))->greaterThan($beacon->visits()->latest()->first()->created_at)) {
-            $this->visit->distance = $request->distance;
-            $this->visit->beacon()->associate($beacon);
-            $this->visit->user()->associate($user);
-            $this->visit->save();
-            event(new UserVisitEvent($this->visit));
+        //TODO::Move to authenticated user.
+        $user = User::where('email', $request->user)->first();
+        if(empty($beacon->visits)) {
+            $this->recordVisit($request, $user, $beacon);
+        } else {
+            if(Carbon::now()->subMinutes(config('beacon.timeout', 1))->greaterThan($beacon->visits()->latest()->first()->created_at)) {
+                $this->recordVisit($request, $user, $beacon);
+            }
         }
         return $this->visit;
+    }
+
+    private function recordVisit($request, $user, $beacon)
+    {
+        $this->visit->distance = $request->distance;
+        $this->visit->beacon()->associate($beacon);
+        $this->visit->user()->associate($user);
+        $this->visit->save();
+        event(new UserVisitEvent($this->visit));
     }
 }
